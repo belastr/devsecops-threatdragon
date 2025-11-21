@@ -249,23 +249,31 @@
               "reasonOutOfScope": "",
               "threats": [
                 {
-                  "id": "49eaf072-ffef-429a-b519-fcaa6200de4b",
-                  "title": "DDoS",
+                  "id": "2a8eb56d-ca0f-42e6-88ab-ec8be4a48976",
+                  "title": "Kompromittierter Benutzer Account",
                   "status": "Mitigated",
-                  "severity": "Medium",
-                  "type": "Denial of service",
-                  "description": "Ein DDoS Angriff kann den Login-Dienst überlasten und somit für Anwender unerreichbar machen. \n\nCAPEC-125: Flooding: An adversary consumes the resources of a target by rapidly engaging in a large number of interactions with the target.\n\nATT&CK: TA0038 - Network Effects: The adversary is trying to intercept or manipulate network traffic to or from a device.\n\nD: 8 / R: 10 / E: 8 / A: 10 / DREA: 36",
-                  "mitigation": "Firewall, Load-Balancer oder CDN einsetzen, um direkten Datenverkehr auf Login-Server zu begrenzen.\n\nDEFEND: D3-ITF - Inbound Traffic Filtering\nASVS: CWE 770 (8.1.4): Verify the application can detect and alert on abnormal numbers of requests, such as by IP, user, total per hour or day, or whatever makes sense for the application.\n\nD: 4 / R: 10 / E: 4 / A: 10 / Neuer DREA: 28",
+                  "severity": "Low",
+                  "type": "Spoofing",
+                  "description": "Bedrohung: Angreifer gibt sich als legitimer Benutzer aus, indem er kompromittierte Zugangsdaten und ein abgefangenes OTT wiederverwendet.\n\nAngriffsvektor: Phishing auf Zugangsdaten, Social Engineering gegen Benutzer, OTT wird mit Malware am Smartphone abgefangen und verwendet.\n\nCAPEC-98: Phishing\nT1586: Compromise Accounts",
+                  "mitigation": "Maßnahme: Multifaktor-Token-Bindung – Benutzer-Identität und OTT werden kryptographisch an ein spezifisches Endgerät und einen Session-Identifier gebunden, sodass abgefangene OTT-Tokens nicht wiederverwendet werden können.\n\nTechnisch: Beim Login generiert der 2FA-Dienst einen Session-Hash aus Benutzer, Gerät und nonce. OTT wird auf dem Gerät erzeugt und signiert. Login akzeptiert den OTT nur, wenn Session-Bindung passt.\n\nRisikoreduktion: Erneutes Verwenden von abgefangenen OTT-Tokens ist praktisch nicht mehr möglich.\n\nMASTG-KNOW-0034: Device Binding",
                   "modelType": "STRIDE",
                   "new": false,
-                  "number": 101,
-                  "score": "28"
+                  "number": 103,
+                  "score": "9"
                 }
               ],
               "hasOpenThreats": false,
               "isWebApplication": null,
               "handlesCardPayment": null,
-              "handlesGoodsOrServices": null
+              "handlesGoodsOrServices": null,
+              "threatFrequency": {
+                "spoofing": 2,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": -1,
+                "elevationOfPrivilege": 0
+              }
             }
           },
           {
@@ -638,7 +646,26 @@
               "isEncrypted": false,
               "isPublicNetwork": false,
               "protocol": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "d2a40b48-03bc-494d-a2df-e94ed5088394",
+                  "title": "Events abfangen",
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "type": "Information disclosure",
+                  "description": "Bedrohung: Interner Angreifer liest SIEM-Events und erhält sensible Account-Informationen.\n\nAngriffsvektor: Unberechtigter Zugriff auf Events über internes SIEM-Interface oder Debug-Endpunkte, Event-Payload auslesen.\n\nCAPEC-36: Using Unpublished Interfaces or Functionality\nT1087: Account Discovery",
+                  "mitigation": "Maßnahme: Least-Privilege-SIEM-Zugriffsmodell – Nur Rollen mit zwingendem Bedarf können SIEM-Events lesen.\n\nTechnisch: RBAC mit strengen Rollenprofilen. Zugriff über privilegierten Proxy, also kein direkter Datenbankzugriff. Regelmäßige Rezertifizierung.\n\nRisikoreduktion: Einsichtnahme durch unbefugte Benutzer wird stark eingeschränkt.\n\nASVS V8: Authorization",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 106,
+                  "score": "8"
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 0,
+                "informationDisclosure": 1,
+                "denialOfService": 0
+              }
             },
             "labels": [
               "SIEM Event: 2FA"
@@ -1117,7 +1144,28 @@
               "isEncrypted": true,
               "isSigned": true,
               "hasOpenThreats": false,
-              "threats": []
+              "threats": [
+                {
+                  "id": "ab012afb-359e-4a9e-a030-3a617acdb0b5",
+                  "title": "2FA-Anfrage abstreiten",
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "type": "Repudiation",
+                  "description": "Bedrohung: Angreifer bestreitet nachträglich, einen 2FA-Vorgang ausgelöst zu haben.\n\nAngriffsvektor: OTT-Anfrage wird echt erzeugt, aber danach geprüft, ob der Service nicht korrekt signiert oder mit Benutzerbindung archiviert wurde, dadurch wird eine nachträgliche Zuordnung verhindert.\n\nCAPEC-173: Action Spoofing\nT1112: Modify Registry",
+                  "mitigation": "Maßnahme: Ereignis-Signatur mit Benutzerbindung – Jedes 2FA-Event wird digital signiert und enthält eine eindeutige Zuordnung zur Aktion des konkreten Benutzers.\n\nTechnisch: Signatur über Benutzer, Zeitstempel, Request, Login. Validierung im SIEM bei allen Event-Verarbeitungen. Logs enthalten Signaturstatus also Validierungsbeweis.\n\nRisikoreduktion: Abstreitbarkeit ausgeschlossen, weil Events beweisbar zuordbar sind.\n\nASVS V16.2.1: General Logging",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 105,
+                  "score": "7"
+                }
+              ],
+              "storesInventory": null,
+              "threatFrequency": {
+                "tampering": 0,
+                "repudiation": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             }
           },
           {
@@ -1237,7 +1285,29 @@
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "e441c032-5637-4dab-b425-f31b10d09028",
+                  "title": "Berechtigungen eskalieren",
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "type": "Elevation of privilege",
+                  "description": "Bedrohung: Kompromittierter interner Angreifer mit eingeschränkten Berechtigungen eskaliert Berechtigungen auf Admin-Level, um Ereignisse zu kontrollieren.\n\nAngriffsvektor: Schwachstellen im RBAC, Umgehung von Berechtigungsprüfung, Einsatz lokaler Schwachstelle oder ungeschützter API, administrativer Vollzugriff\n\nCAPEC-233: Privilege Escalation\nT1068: Exploitation for Privilege Escalation",
+                  "mitigation": "Maßnahme: Administrative Zugriffstrennung und Härtung – Administrationskonten sind physisch und logisch vom normalen Zugriff getrennt. Kritische Aktionen erfordern zwei Administratoren.\n\nTechnisch: Zwang zur 2-Personen-Autorisation für kritische Rollenänderungen. Rollentrennung durchgesetzt durch Identity-Provider.\n\nRisikoreduktion: Unbefugte Rechteausweitung erschwert und Missbrauch schneller erkennbar.\n\nASVS V2.3.5: Business Logic Security",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 108,
+                  "score": "8"
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 1
+              }
             }
           },
           {
@@ -1357,7 +1427,29 @@
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": []
+              "threats": [
+                {
+                  "id": "64f3739a-9156-4c5e-a460-096de76a8d8f",
+                  "title": "OTT Request Flooding",
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "type": "Denial of service",
+                  "description": "Bedrohung: Angreifer erzeugt massenhaft OTT-Anfragen, um Ressourcen zu blockieren und legitime Authentifizierungen zu verhindern.\n\nAngriffsvektor: Skript für Request an OTT-API, Überlastung der Queue, Verzögerung oder Abbruch gültiger 2FA-Versuche\n\nCAPEC-125: Flooding\nT1499: Endpoint Denial of Service",
+                  "mitigation": "Maßnahme: Adaptive Rate-Limiting und DoS-Abwehr – OTT-Anfragen pro Benutzer, Gerät, IP sind adaptiv begrenzt, Missbrauch wird aktiv blockiert.\n\nTechnisch: Sliding-Window-Rate-Limiter pro Device. Wartezeiten bei verdächtigen Sequenzen. Integration in SIEM für automatische Blockierung.\n\nRisikoreduktion: Flutung des OTT-Dienstes wird abgewehrt, legitime Benutzer bleiben funktionsfähig.\n\nASVS V15.3.4: Defensive Coding",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 107,
+                  "score": "9"
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 0
+              }
             }
           },
           {
@@ -1378,7 +1470,7 @@
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "strokeWidth": 1.5,
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -1479,7 +1571,27 @@
               "isEncrypted": true,
               "isSigned": true,
               "hasOpenThreats": false,
-              "threats": []
+              "threats": [
+                {
+                  "id": "b8cac1b0-7cee-4592-a0ce-ecb685fe5430",
+                  "title": "Manipulierte Logs",
+                  "status": "Mitigated",
+                  "severity": "Low",
+                  "type": "Tampering",
+                  "description": "Bedrohung: Manipulation oder Löschung von Log-Einträgen, um missbräuchliche Anmeldungen zu vertuschen.\n\nAngriffsvektor: Privilege Escalation im SIEM-System, Änderung gespeicherter Logs über Datenbank-Interface oder direkten Schreibzugriff.\n\nCAPEC-148: Content Spoofing\nT1070: Indicator Removal",
+                  "mitigation": "Maßnahme: WORM Audit-Logging – Logs können nicht gelöscht oder verändert werden, nur ergänzt. Änderungen lassen sich eindeutig nachvollziehen.\n\nTechnisch: SIEM-Logs werden versioniert und kryptographisch abgelegt. Manipulationen erzeugen Integritätsalarm. Admin-Aktionen werden nach Vier-Augen-Prinzip kontrolliert.\n\nRisikoreduktion: Manipulation von Logs praktisch nicht mehr möglich also Angriffe erkennbar.\n\nD3-FIM",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 104,
+                  "score": "6"
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             }
           },
           {
@@ -1609,7 +1721,7 @@
     ],
     "reviewer": "Georg Neugebauer",
     "diagramTop": 10,
-    "threatTop": 102
+    "threatTop": 108
   },
   "version": "2.5.0"
 }
