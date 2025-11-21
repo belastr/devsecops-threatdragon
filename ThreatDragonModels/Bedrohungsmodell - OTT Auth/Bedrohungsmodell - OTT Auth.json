@@ -250,14 +250,14 @@
                   "id": "2a8eb56d-ca0f-42e6-88ab-ec8be4a48976",
                   "title": "Kompromittierter Benutzer Account",
                   "status": "Mitigated",
-                  "severity": "Low",
+                  "severity": "Medium",
                   "type": "Spoofing",
                   "description": "Bedrohung: Angreifer gibt sich als legitimer Benutzer aus, indem er kompromittierte Zugangsdaten und ein abgefangenes OTT wiederverwendet.\n\nAngriffsvektor: Phishing auf Zugangsdaten, Social Engineering gegen Benutzer, OTT wird mit Malware am Smartphone abgefangen und verwendet.\n\nCAPEC-98: Phishing\nT1586: Compromise Accounts",
                   "mitigation": "Maßnahme: Multifaktor-Token-Bindung – Benutzer-Identität und OTT werden kryptographisch an ein spezifisches Endgerät und einen Session-Identifier gebunden, sodass abgefangene OTT-Tokens nicht wiederverwendet werden können.\n\nTechnisch: Beim Login generiert der 2FA-Dienst einen Session-Hash aus Benutzer, Gerät und nonce. OTT wird auf dem Gerät erzeugt und signiert. Login akzeptiert den OTT nur, wenn Session-Bindung passt.\n\nRisikoreduktion: Erneutes Verwenden von abgefangenen OTT-Tokens ist praktisch nicht mehr möglich.\n\nMASTG-KNOW-0034: Device Binding",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 103,
-                  "score": "9"
+                  "score": "18"
                 }
               ],
               "hasOpenThreats": false,
@@ -265,7 +265,7 @@
               "handlesCardPayment": null,
               "handlesGoodsOrServices": null,
               "threatFrequency": {
-                "spoofing": 2,
+                "spoofing": 3,
                 "tampering": 0,
                 "repudiation": 0,
                 "informationDisclosure": 0,
@@ -649,19 +649,19 @@
                   "id": "d2a40b48-03bc-494d-a2df-e94ed5088394",
                   "title": "Events abfangen",
                   "status": "Mitigated",
-                  "severity": "Low",
+                  "severity": "Medium",
                   "type": "Information disclosure",
                   "description": "Bedrohung: Interner Angreifer liest SIEM-Events und erhält sensible Account-Informationen.\n\nAngriffsvektor: Unberechtigter Zugriff auf Events über internes SIEM-Interface oder Debug-Endpunkte, Event-Payload auslesen.\n\nCAPEC-36: Using Unpublished Interfaces or Functionality\nT1087: Account Discovery",
                   "mitigation": "Maßnahme: Least-Privilege-SIEM-Zugriffsmodell – Nur Rollen mit zwingendem Bedarf können SIEM-Events lesen.\n\nTechnisch: RBAC mit strengen Rollenprofilen. Zugriff über privilegierten Proxy, also kein direkter Datenbankzugriff. Regelmäßige Rezertifizierung.\n\nRisikoreduktion: Einsichtnahme durch unbefugte Benutzer wird stark eingeschränkt.\n\nASVS V8: Authorization",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 106,
-                  "score": "8"
+                  "score": "16"
                 }
               ],
               "threatFrequency": {
                 "tampering": 0,
-                "informationDisclosure": 1,
+                "informationDisclosure": 2,
                 "denialOfService": 0
               }
             },
@@ -1026,7 +1026,7 @@
           {
             "position": {
               "x": 360,
-              "y": -290
+              "y": -300
             },
             "size": {
               "width": 120,
@@ -1154,13 +1154,13 @@
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 105,
-                  "score": "7"
+                  "score": "14"
                 }
               ],
               "storesInventory": null,
               "threatFrequency": {
                 "tampering": 0,
-                "repudiation": 1,
+                "repudiation": 2,
                 "informationDisclosure": 0,
                 "denialOfService": 0
               }
@@ -1288,14 +1288,14 @@
                   "id": "e441c032-5637-4dab-b425-f31b10d09028",
                   "title": "Berechtigungen eskalieren",
                   "status": "Mitigated",
-                  "severity": "Low",
+                  "severity": "Medium",
                   "type": "Elevation of privilege",
                   "description": "Bedrohung: Kompromittierter interner Angreifer mit eingeschränkten Berechtigungen eskaliert Berechtigungen auf Admin-Level, um Ereignisse zu kontrollieren.\n\nAngriffsvektor: Schwachstellen im RBAC, Umgehung von Berechtigungsprüfung, Einsatz lokaler Schwachstelle oder ungeschützter API, administrativer Vollzugriff\n\nCAPEC-233: Privilege Escalation\nT1068: Exploitation for Privilege Escalation",
                   "mitigation": "Maßnahme: Administrative Zugriffstrennung und Härtung – Administrationskonten sind physisch und logisch vom normalen Zugriff getrennt. Kritische Aktionen erfordern zwei Administratoren.\n\nTechnisch: Zwang zur 2-Personen-Autorisation für kritische Rollenänderungen. Rollentrennung durchgesetzt durch Identity-Provider.\n\nRisikoreduktion: Unbefugte Rechteausweitung erschwert und Missbrauch schneller erkennbar.\n\nASVS V2.3.5: Business Logic Security",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 108,
-                  "score": "8"
+                  "score": "16"
                 }
               ],
               "threatFrequency": {
@@ -1304,7 +1304,7 @@
                 "repudiation": 0,
                 "informationDisclosure": 0,
                 "denialOfService": 0,
-                "elevationOfPrivilege": 1
+                "elevationOfPrivilege": 2
               }
             }
           },
@@ -1430,14 +1430,14 @@
                   "id": "64f3739a-9156-4c5e-a460-096de76a8d8f",
                   "title": "OTT Request Flooding",
                   "status": "Mitigated",
-                  "severity": "Low",
+                  "severity": "Medium",
                   "type": "Denial of service",
                   "description": "Bedrohung: Angreifer erzeugt massenhaft OTT-Anfragen, um Ressourcen zu blockieren und legitime Authentifizierungen zu verhindern.\n\nAngriffsvektor: Skript für Request an OTT-API, Überlastung der Queue, Verzögerung oder Abbruch gültiger 2FA-Versuche\n\nCAPEC-125: Flooding\nT1499: Endpoint Denial of Service",
                   "mitigation": "Maßnahme: Adaptive Rate-Limiting und DoS-Abwehr – OTT-Anfragen pro Benutzer, Gerät, IP sind adaptiv begrenzt, Missbrauch wird aktiv blockiert.\n\nTechnisch: Sliding-Window-Rate-Limiter pro Device. Wartezeiten bei verdächtigen Sequenzen. Integration in SIEM für automatische Blockierung.\n\nRisikoreduktion: Flutung des OTT-Dienstes wird abgewehrt, legitime Benutzer bleiben funktionsfähig.\n\nASVS V15.3.4: Defensive Coding",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 107,
-                  "score": "9"
+                  "score": "18"
                 }
               ],
               "threatFrequency": {
@@ -1445,7 +1445,7 @@
                 "tampering": 0,
                 "repudiation": 0,
                 "informationDisclosure": 0,
-                "denialOfService": 1,
+                "denialOfService": 3,
                 "elevationOfPrivilege": 0
               }
             }
@@ -1468,7 +1468,7 @@
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "strokeWidth": 2.5,
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1581,15 +1581,16 @@
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 104,
-                  "score": "6"
+                  "score": "12"
                 }
               ],
               "threatFrequency": {
-                "tampering": 1,
+                "tampering": 2,
                 "repudiation": 0,
                 "informationDisclosure": 0,
                 "denialOfService": 0
-              }
+              },
+              "storesInventory": null
             }
           },
           {
